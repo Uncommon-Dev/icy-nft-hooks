@@ -18,6 +18,9 @@
     "outDir": "lib",
     "resolveJsonModule": true,
     "rootDir": "src",
+    "paths": {
+      "~/*": ["./src/*"]
+    },
     "strict": true,
   },
   "exclude": [
