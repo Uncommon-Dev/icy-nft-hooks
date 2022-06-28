@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { useContext } from 'react';
 
 import {
   collectionQuery,
@@ -7,7 +6,6 @@ import {
   CollectionWithStatsQuery,
   CollectionQueryVariables,
 } from './query';
-import IcyContext from '../../context';
 
 interface WithStatsArgs {
   address: string;
@@ -22,17 +20,10 @@ interface WithoutStatsArgs {
 type Args = WithStatsArgs | WithoutStatsArgs;
 
 function useCollection<T extends Args>(args: T) {
-  const { apiKey } = useContext(IcyContext);
-
   const { data, loading } = useQuery<
     T extends WithStatsArgs ? CollectionWithStatsQuery : CollectionQuery,
     CollectionQueryVariables
   >(collectionQuery, {
-    context: {
-      Headers: {
-        'x-api-key': apiKey,
-      },
-    },
     variables: args,
   });
 

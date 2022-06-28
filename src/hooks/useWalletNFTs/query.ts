@@ -1,5 +1,7 @@
 import { gql } from '@apollo/client';
 
+import { Connection } from '~/types';
+
 export const walletNFTsQuery = gql`
   query WalletNFTs($ensName: String!) {
     wallet(ensName: $ensName) {
@@ -9,17 +11,15 @@ export const walletNFTsQuery = gql`
         edges {
           node {
             tokenId
+            images {
+              url
+            }
             ... on ERC721Token {
               contract {
                 address
                 ... on ERC721Contract {
                   symbol
                   name
-                }
-              }
-              ... on ERC721Token {
-                images {
-                  url
                 }
               }
             }
@@ -29,12 +29,6 @@ export const walletNFTsQuery = gql`
     }
   }
 `;
-
-export interface Connection<T> {
-  edges: {
-    node: T;
-  }[];
-}
 
 export interface NFT {
   tokenId: string;

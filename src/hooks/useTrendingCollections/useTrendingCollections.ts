@@ -1,7 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { useContext } from 'react';
-
-import IcyContext from '~/context';
 
 import {
   trendingCollectionsQuery,
@@ -12,17 +9,10 @@ import {
 type Args = TrendingCollectionsQueryVariables;
 
 function useTrendingCollections(args: Args) {
-  const { apiKey } = useContext(IcyContext);
-
   const { data, loading } = useQuery<
     TrendingCollectionsQuery,
     TrendingCollectionsQueryVariables
   >(trendingCollectionsQuery, {
-    context: {
-      Headers: {
-        'x-api-key': apiKey,
-      },
-    },
     variables: args,
   });
 

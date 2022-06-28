@@ -5,20 +5,20 @@ export const collectionQuery = gql`
     contract(address: $address) {
       ... on ERC721Contract {
         address
-        name
-        symbol
-        stats(
-          timeRange: {
-            gte: "2022-01-01T00:00:00.000Z"
-            lt: "2022-01-07T00:00:00.000Z"
-          }
-        ) {
-          floor
-          volume
-        } @include(if: $includeStats)
-        unsafeOpenseaBannerImageUrl
-        unsafeOpenseaImageUrl
-        unsafeOpenseaSlug
+        # name
+        # symbol
+        # stats(
+        #   timeRange: {
+        #     gte: "2022-01-01T00:00:00.000Z"
+        #     lt: "2022-01-07T00:00:00.000Z"
+        #   }
+        # ) {
+        #   floor
+        #   volume
+        # } @include(if: $includeStats)
+        # unsafeOpenseaBannerImageUrl
+        # unsafeOpenseaImageUrl
+        # unsafeOpenseaSlug
       }
     }
   }

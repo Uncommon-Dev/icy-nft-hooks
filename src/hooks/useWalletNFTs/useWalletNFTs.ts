@@ -1,12 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { useContext } from 'react';
 
 import {
   walletNFTsQuery,
   WalletNFTsQuery,
   WalletNFTsQueryVariables,
 } from './query';
-import IcyContext from '../../context';
 
 interface AddressArgs {
   address: string;
@@ -30,16 +28,9 @@ function useWalletNFTs(args: Args) {
     isSearchValid = ADDRESS_REGEX.test(args.address);
   }
 
-  const { apiKey } = useContext(IcyContext);
-
   const { data, loading } = useQuery<WalletNFTsQuery, WalletNFTsQueryVariables>(
     walletNFTsQuery,
     {
-      context: {
-        Headers: {
-          'x-api-key': apiKey,
-        },
-      },
       skip: !isSearchValid, // We don't want to run invalid queries and waste rate limits
       variables: args,
     }

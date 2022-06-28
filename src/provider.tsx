@@ -1,22 +1,45 @@
 import {
-  createHttpLink,
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
+  ApolloLink,
+  HttpLink,
+  concat,
 } from '@apollo/client';
-import React from 'react';
+import React, { useEffect } from 'react';
+import create from 'zustand';
 
-import IcyContext from './context';
+console.log('hi?');
 
-const link = createHttpLink({
+interface TokenStore {
+  token: string | null;
+  setToken: (token: string) => void;
+}
+
+const useTokenStore = create<TokenStore>((set) => ({
+  token: null,
+  setToken: (token) => set({ token }),
+}));
+
+const httpLink = new HttpLink({
   uri: 'https://graphql.icy.tools/graphql',
-  headers: {
-    'x-api-key': '58fb170f-0578-4164-971d-686af1a7c0bc',
-  },
+});
+
+const authLink = new ApolloLink((operation, forward) => {
+  console.log('token is: ', useTokenStore.getState().token);
+  // add the authorization to the headers
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      'x-api-key': useTokenStore.getState().token,
+    },
+  }));
+
+  return forward(operation);
 });
 
 const client = new ApolloClient({
-  link,
+  link: concat(authLink, httpLink),
   cache: new InMemoryCache({
     typePolicies: {
       ERC721Token: {
@@ -38,11 +61,13 @@ interface IcyProviderProps {
 }
 
 function IcyProvider(props: IcyProviderProps) {
-  return (
-    <IcyContext.Provider value={{ apiKey: props.apiKey }}>
-      <ApolloProvider client={client}>{props.children}</ApolloProvider>
-    </IcyContext.Provider>
-  );
+  const tokenStore = useTokenStore();
+
+  useEffect(() => {
+    tokenStore.setToken(props.apiKey);
+  }, [props.apiKey]);
+
+  return <ApolloProvider client={client}>{props.children}</ApolloProvider>;
 }
 
 export default IcyProvider;
